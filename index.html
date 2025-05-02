@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure Quads - Прокат квадроциклов</title>
+    
+</head>
+<body>
+    <!-- Шапка -->
+    <header>
+        <div class="header-container">
+            <div class="logo">Adventure Quads</div>
+            <nav>
+                <ul>
+                    <li><a href="#services">Услуги</a></li>
+                    <li><a href="#gallery">Галерея</a></li>
+                    <li><a href="#reviews">Отзывы</a></li>
+                    <li><a href="#contacts">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <!-- Герой-секция -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Прокат квадроциклов для настоящих приключений</h1>
+            <p>Покоряйте бездорожье с нашими мощными квадроциклами и профессиональными гидами</p>
+            <a href="#booking" class="btn">Забронировать сейчас</a>
+        </div>
+    </section>
+
+    <!-- Секция услуг -->
+    <section class="services" id="services">
+        <h2>Наши услуги</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://example.com/quad1.jpg');"></div>
+                <div class="service-content">
+                    <h3>Экскурсии по бездорожью</h3>
+                    <p>2-часовые приключения по живописным маршрутам</p>
+                    <p class="price">1500 грн</p>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://example.com/quad2.jpg');"></div>
+                <div class="service-content">
+                    <h3>Аренда квадроциклов</h3>
+                    <p>Почасовая аренда для самостоятельных поездок</p>
+                    <p class="price">800 грн/час</p>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://example.com/quad3.jpg');"></div>
+                <div class="service-content">
+                    <h3>Семейные туры</h3>
+                    <p>Безопасные маршруты для родителей с детьми</p>
+                    <p class="price">2000 грн</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Плавная прокрутка для меню
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Анимация при прокрутке
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
