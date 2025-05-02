@@ -288,6 +288,26 @@
             </div>
         </div>
     </section>
+    <section id="booking" class="booking-form">
+  <h2>Забронювати квадроцикл</h2>
+  <form id="atvForm" onsubmit="sendBooking(event)">
+    <label>Оберіть дату:
+      <input type="date" id="date" required>
+    </label><br>
+
+    <label>Оберіть час:
+      <input type="time" id="time" required>
+    </label><br>
+
+    <label>Кількість квадроциклів:
+      <input type="number" id="count" value="1" min="1" max="10" required onchange="calculatePrice()">
+    </label><br>
+
+    <p>💵 Вартість: <strong id="price">$100</strong></p>
+
+    <button type="submit">Забронювати</button>
+  </form>
+</section>
 
     <!-- Футер -->
     <footer id="contacts">
@@ -369,5 +389,31 @@
             updateCarousel();
         }, 5000);
     </script>
+    <script>
+  function calculatePrice() {
+    const count = document.getElementById("count").value;
+    const price = 100 * parseInt(count); // 💰 100$ за 1 квадроцикл
+    document.getElementById("price").textContent = `$${price}`;
+  }
+
+  function sendBooking(e) {
+    e.preventDefault();
+
+    const date = document.getElementById("date").value;
+    const time = document.getElementById("time").value;
+    const count = document.getElementById("count").value;
+    const price = 100 * parseInt(count);
+
+    const subject = `Бронювання квадроциклів на ${date} о ${time}`;
+    const body = `Дата: ${date}%0D%0AЧас: ${time}%0D%0AКількість квадроциклів: ${count}%0D%0AЦіна: $${price}`;
+
+    // ✉️ ВСТАВ СЮДИ СВІЙ EMAIL
+    window.location.href = `mailto:youremail@example.com?subject=${subject}&body=${body}`;
+  }
+
+  // Ініціалізація при завантаженні
+  window.onload = calculatePrice;
+</script>
+
 </body>
 </html>
