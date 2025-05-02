@@ -288,30 +288,35 @@
             </div>
         </div>
     </section>
-    <section id="booking" class="booking-form">
-        <h2>Забронювати квадроцикл</h2>
-        <form id="atvForm" onsubmit="sendBooking(event)">
-        <label>Оберіть дату:
-              <input type="date" id="date" required>
-        </label><br>
+    <form action="https://formsubmit.co/your-email@example.com" method="POST">
+  <input type="hidden" name="_subject" value="Нова заявка на квадроцикл">
+  <input type="hidden" name="_template" value="box"> <!-- гарне оформлення -->
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_next" value="https://your-site.com/thank-you.html"> <!-- переадресація -->
 
-        <label>Час початку:
-          <input type="time" id="startTime" required onchange="calculatePrice()">
-        </label><br>
+  <label>Оберіть дату:
+    <input type="date" name="Дата" required>
+  </label><br>
 
-        <label>Час завершення:
-          <input type="time" id="endTime" required onchange="calculatePrice()">
-        </label><br>
+  <label>Час початку:
+    <input type="time" name="Час початку" required>
+  </label><br>
 
-        <label>Кількість квадроциклів:
-          <input type="number" id="count" value="1" min="1" max="10" required onchange="calculatePrice()">
-        </label><br>
+  <label>Час завершення:
+    <input type="time" name="Час завершення" required>
+  </label><br>
 
-        <p>💵 Вартість: <strong id="price"> 0 грн </strong></p>
+  <label>Кількість квадроциклів:
+    <input type="number" name="Кількість квадроциклів" value="1" min="1" max="10" required>
+  </label><br>
 
-        <button type="submit">Забронювати</button>
-      </form>
-    </section>
+  <label>Розрахована вартість (авто):
+    <input type="text" name="Вартість" id="priceInput" readonly>
+  </label><br>
+
+  <button type="submit">Забронювати</button>
+</form>
+
 
 
     <!-- Футер -->
@@ -395,50 +400,28 @@
         }, 5000);
     </script>
     <script>
-  function calculatePrice() {
-    const start = document.getElementById("startTime").value;
-    const end = document.getElementById("endTime").value;
-    const count = parseInt(document.getElementById("count").value) || 1;
+  <script>
+function calculatePrice() {
+  const start = document.querySelector('input[name="Час початку"]').value;
+  const end = document.querySelector('input[name="Час завершення"]').value;
+  const count = parseInt(document.querySelector('input[name="Кількість квадроциклів"]').value);
+  const priceField = document.getElementById('priceInput');
 
-    if (!start || !end) {
-      document.getElementById("price").textContent = `0 грн`;
-      return;
-    }
+  if (!start || !end || isNaN(count)) return;
 
-    const [startH, startM] = start.split(":").map(Number);
-    const [endH, endM] = end.split(":").map(Number);
-    let hours = endH + endM / 60 - (startH + startM / 60);
-    if (hours <= 0) hours = 0;
+  const [startH, startM] = start.split(':').map(Number);
+  const [endH, endM] = end.split(':').map(Number);
 
-    const pricePerHour = 800;
-    const total = Math.ceil(hours * count * pricePerHour);
+  let hours = (endH + endM / 60) - (startH + startM / 60);
+  if (hours < 0) hours += 24;
 
-    document.getElementById("price").textContent = `${total} грн`;
-  }
+  const total = Math.ceil(hours) * count * 500; // 500 грн за годину
 
-  function sendBooking(e) {
-    e.preventDefault();
-
-    const date = document.getElementById("date").value;
-    const start = document.getElementById("startTime").value;
-    const end = document.getElementById("endTime").value;
-    const count = document.getElementById("count").value;
-
-    const [startH, startM] = start.split(":").map(Number);
-    const [endH, endM] = end.split(":").map(Number);
-    let hours = endH + endM / 60 - (startH + startM / 60);
-    if (hours <= 0) hours = 0;
-
-    const price = Math.ceil(hours * count * 800);
-
-    const subject = `Бронювання квадроциклів на ${date}`;
-    const body = `Дата: ${date}%0D%0AЧас: ${start} — ${end}%0D%0AКількість квадроциклів: ${count}%0D%0AТривалість: ${hours.toFixed(2)} год.%0D%0AЦіна: ${price} грн`;
-
-    // ✉️ ВСТАВ СЮДИ СВІЙ EMAIL
-    window.location.href = `mailto:andrii.zub@nure.ua?subject=${subject}&body=${body}`;
-  }
-
-  window.onload = calculatePrice;
+  priceField.value = `${total} грн`;
+}
+document.querySelectorAll('input').forEach(input => {
+  input.addEventListener('change', calculatePrice);
+});
 </script>
 
 
