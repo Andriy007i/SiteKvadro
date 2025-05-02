@@ -497,3 +497,45 @@
                 min-width: 100%;
             }
         }
+.booking-form {
+  background: #f9f9f9;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 400px;
+  margin: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: sans-serif;
+}
+
+.booking-form h2 {
+  text-align: center;
+}
+
+.booking-form form label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.booking-form input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.booking-form button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 15px;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.booking-form button:hover {
+  background-color: #45a049;
+}
