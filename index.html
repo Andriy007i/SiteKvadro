@@ -410,10 +410,10 @@
     let hours = endH + endM / 60 - (startH + startM / 60);
     if (hours <= 0) hours = 0;
 
-    const pricePerHour = 100;
+    const pricePerHour = 800;
     const total = Math.ceil(hours * count * pricePerHour);
 
-    document.getElementById("price").textContent = `$${total}`;
+    document.getElementById("price").textContent = `${total} грн`;
   }
 
   function sendBooking(e) {
