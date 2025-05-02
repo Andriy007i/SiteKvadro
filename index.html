@@ -293,7 +293,7 @@
     <div id="success-message" style="display: none; background-color: #4CAF50; color: white; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
         ОК, заброньовано! Ми скоро з вами зв'яжемося.
     </div>
-    <form id="booking-form" action="https://formsubmit.co/andrii.zub@nure.ua" method="POST">
+    <form action="https://formsubmit.co/andrii.zub@nure.ua" method="POST">
         <input type="hidden" name="_subject" value="Нова заявка на квадроцикл">
         <input type="hidden" name="_template" value="box">
         <input type="hidden" name="_captcha" value="false">
@@ -403,39 +403,7 @@
             updateCarousel();
         }, 5000);
     </script>
-  <script>
-      // Обработка отправки формы
-document.getElementById('bookingForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Создаем iframe для отправки формы
-    const iframe = document.createElement('iframe');
-    iframe.name = 'formsubmit-iframe';
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-    
-    // Устанавливаем target формы на iframe
-    this.target = 'formsubmit-iframe';
-    
-    // Отправляем форму
-    this.submit();
-    
-    // Показываем сообщение об успехе
-    document.getElementById('success-message').style.display = 'block';
-    document.getElementById('success-message').scrollIntoView({ behavior: 'smooth' });
-    
-    // Очищаем форму через 1 секунду (опционально)
-    setTimeout(() => {
-        this.reset();
-        setMinDate(); // Устанавливаем дату снова на завтра
-        calculatePrice(); // Пересчитываем цену
-    }, 1000);
-    
-    // Удаляем iframe через 5 секунд
-    setTimeout(() => {
-        iframe.remove();
-    }, 5000);
-});
+<script>
 // Установка минимальной даты (завтра)
 function setMinDate() {
     const today = new Date();
@@ -482,6 +450,39 @@ function calculatePrice() {
 
     const total = Math.ceil(hours) * count * 800; // 800 грн за годину
     priceField.value = `${total} грн`;
+}
+
+// Обработка отправки формы
+function handleSubmit(event) {
+    event.preventDefault();
+    
+    // Создаем iframe для отправки формы
+    const iframe = document.createElement('iframe');
+    iframe.name = 'formsubmit-iframe';
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    
+    // Устанавливаем target формы на iframe
+    event.target.target = 'formsubmit-iframe';
+    
+    // Отправляем форму
+    event.target.submit();
+    
+    // Показываем сообщение об успехе
+    document.getElementById('success-message').style.display = 'block';
+    document.getElementById('success-message').scrollIntoView({ behavior: 'smooth' });
+    
+    // Очищаем форму через 1 секунду (опционально)
+    setTimeout(() => {
+        event.target.reset();
+        setMinDate(); // Устанавливаем дату снова на завтра
+        calculatePrice(); // Пересчитываем цену
+    }, 1000);
+    
+    // Удаляем iframe через 5 секунд
+    setTimeout(() => {
+        iframe.remove();
+    }, 5000);
 }
 
 // Инициализация при загрузке
