@@ -29,13 +29,22 @@
             margin: 0 auto;
             padding: 0 20px;
         }
-        
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: #ff6b00;
-        }
-        
+  .logo img {
+    height: 50px; /* Стандартная высота логотипа */
+    width: auto; /* Сохраняет пропорции */
+    transition: all 0.3s ease; /* Плавное изменение при наведении */
+}
+
+.logo img:hover {
+    opacity: 0.8; /* Эффект при наведении */
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+    .logo img {
+        height: 40px; /* Уменьшаем логотип на мобильных */
+    }
+}
         nav ul {
             display: flex;
             list-style: none;
