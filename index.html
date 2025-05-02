@@ -293,11 +293,10 @@
     <div id="success-message" style="display: none; background-color: #4CAF50; color: white; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
         ОК, заброньовано! Ми скоро з вами зв'яжемося.
     </div>
-    <form action="https://formsubmit.co/andrii.zub@nure.ua" method="POST">
+    <form id="bookingForm">
         <input type="hidden" name="_subject" value="Нова заявка на квадроцикл">
         <input type="hidden" name="_template" value="box">
         <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_next" value="#success">
 
         <label>Оберіть дату:
             <input type="date" name="Дата" id="bookingDate" required>
@@ -315,14 +314,12 @@
             <input type="number" name="Кількість квадроциклів" value="1" min="1" max="10" required>
         </label><br>
 
-        <label>Розрахована вартість (авто):
             <input type="text" name="Вартість" id="priceInput" readonly>
         </label><br>
 
         <button type="submit">Забронювати</button>
     </form>
 </section>
-
     <!-- Футер -->
     <footer id="contacts">
         <div class="footer-container">
@@ -410,27 +407,26 @@ function setMinDate() {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
-    // Форматирование даты в YYYY-MM-DD
     const minDate = tomorrow.toISOString().split('T')[0];
     document.getElementById('bookingDate').setAttribute('min', minDate);
-    
-    // Установка завтрашней даты по умолчанию
     document.getElementById('bookingDate').value = minDate;
 }
 
-// Проверка времени (рабочие часы с 9:00 до 20:00)
+// Проверка времени
 function validateTime() {
     const startTime = document.getElementById('startTime');
     const endTime = document.getElementById('endTime');
     
-    // Проверка, что время окончания после времени начала
     if (startTime.value && endTime.value) {
         if (endTime.value <= startTime.value) {
             endTime.setCustomValidity('Час завершення має бути після часу початку');
+            return false;
         } else {
             endTime.setCustomValidity('');
+            return true;
         }
     }
+    return false;
 }
 
 // Расчет цены
@@ -448,48 +444,72 @@ function calculatePrice() {
     let hours = (endH + endM / 60) - (startH + startM / 60);
     if (hours < 0) hours += 24;
 
-    const total = Math.ceil(hours) * count * 800; // 800 грн за годину
+    const total = Math.ceil(hours) * count * 800;
     priceField.value = `${total} грн`;
 }
 
-// Обработка отправки формы
-function handleSubmit(event) {
-    event.preventDefault();
-    
-    // Создаем iframe для отправки формы
-    const iframe = document.createElement('iframe');
-    iframe.name = 'formsubmit-iframe';
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-    
-    // Устанавливаем target формы на iframe
-    event.target.target = 'formsubmit-iframe';
-    
-    // Отправляем форму
-    event.target.submit();
-    
-    // Показываем сообщение об успехе
-    document.getElementById('success-message').style.display = 'block';
-    document.getElementById('success-message').scrollIntoView({ behavior: 'smooth' });
-    
-    // Очищаем форму через 1 секунду (опционально)
-    setTimeout(() => {
-        event.target.reset();
-        setMinDate(); // Устанавливаем дату снова на завтра
-        calculatePrice(); // Пересчитываем цену
-    }, 1000);
-    
-    // Удаляем iframe через 5 секунд
-    setTimeout(() => {
-        iframe.remove();
-    }, 5000);
+// Отправка формы через Fetch API
+async function sendFormData(formData) {
+    try {
+        const response = await fetch('https://formsubmit.co/ajax/andrii.zub@nure.ua', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(Object.fromEntries(formData))
+        });
+        
+        if (response.ok) {
+            return await response.json();
+        }
+        throw new Error('Network response was not ok');
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
 }
 
-// Инициализация при загрузке
+// Обработка отправки формы
+async function handleSubmit(event) {
+    event.preventDefault();
+    
+    if (!validateTime()) return;
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    
+    try {
+        await sendFormData(formData);
+        
+        // Показываем сообщение об успехе
+        document.getElementById('success-message').style.display = 'block';
+        document.getElementById('success-message').scrollIntoView({ behavior: 'smooth' });
+        
+        // Очищаем форму
+        form.reset();
+        setMinDate();
+        
+        // Устанавливаем время по умолчанию
+        const now = new Date();
+        let nextHour = now.getHours() + 1;
+        if (nextHour < 9) nextHour = 9;
+        if (nextHour >= 20) nextHour = 9;
+        
+        document.getElementById('startTime').value = `${nextHour.toString().padStart(2, '0')}:00`;
+        document.getElementById('endTime').value = `${(nextHour + 1).toString().padStart(2, '0')}:00`;
+        
+        calculatePrice();
+        
+    } catch (error) {
+        alert('Сталася помилка при відправці форми. Спробуйте ще раз.');
+    }
+}
+
+// Инициализация
 window.addEventListener('DOMContentLoaded', () => {
     setMinDate();
     
-    // Настройка времени работы (9:00-20:00)
     document.getElementById('startTime').addEventListener('change', function() {
         validateTime();
         calculatePrice();
@@ -502,21 +522,15 @@ window.addEventListener('DOMContentLoaded', () => {
     
     document.querySelector('input[name="Кількість квадроциклів"]').addEventListener('change', calculatePrice);
     
-    // Установка начального времени (следующий полный час от текущего времени)
+    // Установка начального времени
     const now = new Date();
     let nextHour = now.getHours() + 1;
     if (nextHour < 9) nextHour = 9;
-    if (nextHour >= 20) nextHour = 9; // если уже вечер, переносим на утро
+    if (nextHour >= 20) nextHour = 9;
     
-    const startTime = `${nextHour.toString().padStart(2, '0')}:00`;
-    document.getElementById('startTime').value = startTime;
+    document.getElementById('startTime').value = `${nextHour.toString().padStart(2, '0')}:00`;
+    document.getElementById('endTime').value = `${(nextHour + 1).toString().padStart(2, '0')}:00`;
     
-    // Установка времени окончания (+1 час от начала)
-    const endHour = (nextHour + 1) % 24;
-    const endTime = `${endHour.toString().padStart(2, '0')}:00`;
-    document.getElementById('endTime').value = endTime;
-    
-    // Первоначальный расчет цены
     calculatePrice();
 
     // Назначаем обработчик отправки формы
