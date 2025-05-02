@@ -160,7 +160,7 @@
                 grid-template-columns: 1fr;
             }
         }
-footer {
+       footer {
             background-color: #1a1a1a;
             color: white;
             padding: 60px 0 30px;
