@@ -288,36 +288,36 @@
             </div>
         </div>
     </section>
-    <section id="booking-form">
+    
+<section id="booking-form">
     <form action="https://formsubmit.co/andrii.zub@nure.ua" method="POST">
-  <input type="hidden" name="_subject" value="Нова заявка на квадроцикл">
-  <input type="hidden" name="_template" value="box"> <!-- гарне оформлення -->
-  <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_subject" value="Нова заявка на квадроцикл">
+        <input type="hidden" name="_template" value="box">
+        <input type="hidden" name="_captcha" value="false">
 
-  <label>Оберіть дату:
-    <input type="date" name="Дата" required>
-  </label><br>
+        <label>Оберіть дату:
+            <input type="date" name="Дата" id="bookingDate" required>
+        </label><br>
 
-  <label>Час початку:
-    <input type="time" name="Час початку" required>
-  </label><br>
+        <label>Час початку:
+            <input type="time" name="Час початку" id="startTime" min="09:00" max="19:00" required>
+        </label><br>
 
-  <label>Час завершення:
-    <input type="time" name="Час завершення" required>
-  </label><br>
+        <label>Час завершення:
+            <input type="time" name="Час завершення" id="endTime" min="09:00" max="20:00" required>
+        </label><br>
 
-  <label>Кількість квадроциклів:
-    <input type="number" name="Кількість квадроциклів" value="1" min="1" max="10" required>
-  </label><br>
+        <label>Кількість квадроциклів:
+            <input type="number" name="Кількість квадроциклів" value="1" min="1" max="10" required>
+        </label><br>
 
-  <label>Розрахована вартість (авто):
-    <input type="text" name="Вартість" id="priceInput" readonly>
-  </label><br>
+        <label>Розрахована вартість (авто):
+            <input type="text" name="Вартість" id="priceInput" readonly>
+        </label><br>
 
-  <button type="submit">Забронювати</button>
+        <button type="submit">Забронювати</button>
     </form>
-    </section>
-
+</section>
 
     <!-- Футер -->
     <footer id="contacts">
@@ -400,26 +400,87 @@
         }, 5000);
     </script>
   <script>
-function calculatePrice() {
-  const start = document.querySelector('input[name="Час початку"]').value;
-  const end = document.querySelector('input[name="Час завершення"]').value;
-  const count = parseInt(document.querySelector('input[name="Кількість квадроциклів"]').value);
-  const priceField = document.getElementById('priceInput');
-
-  if (!start || !end || isNaN(count)) return;
-
-  const [startH, startM] = start.split(':').map(Number);
-  const [endH, endM] = end.split(':').map(Number);
-
-  let hours = (endH + endM / 60) - (startH + startM / 60);
-  if (hours < 0) hours += 24;
-
-  const total = Math.ceil(hours) * count * 500; // 500 грн за годину
-
-  priceField.value = `${total} грн`;
+// Установка минимальной даты (завтра)
+function setMinDate() {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Форматирование даты в YYYY-MM-DD
+    const minDate = tomorrow.toISOString().split('T')[0];
+    document.getElementById('bookingDate').setAttribute('min', minDate);
+    
+    // Установка завтрашней даты по умолчанию
+    document.getElementById('bookingDate').value = minDate;
 }
-document.querySelectorAll('input').forEach(input => {
-  input.addEventListener('change', calculatePrice);
+
+// Проверка времени (рабочие часы с 9:00 до 20:00)
+function validateTime() {
+    const startTime = document.getElementById('startTime');
+    const endTime = document.getElementById('endTime');
+    
+    // Проверка, что время окончания после времени начала
+    if (startTime.value && endTime.value) {
+        if (endTime.value <= startTime.value) {
+            endTime.setCustomValidity('Час завершення має бути після часу початку');
+        } else {
+            endTime.setCustomValidity('');
+        }
+    }
+}
+
+// Расчет цены
+function calculatePrice() {
+    const start = document.getElementById('startTime').value;
+    const end = document.getElementById('endTime').value;
+    const count = parseInt(document.querySelector('input[name="Кількість квадроциклів"]').value);
+    const priceField = document.getElementById('priceInput');
+
+    if (!start || !end || isNaN(count)) return;
+
+    const [startH, startM] = start.split(':').map(Number);
+    const [endH, endM] = end.split(':').map(Number);
+
+    let hours = (endH + endM / 60) - (startH + startM / 60);
+    if (hours < 0) hours += 24;
+
+    const total = Math.ceil(hours) * count * 800; // 500 грн за годину
+    priceField.value = `${total} грн`;
+}
+
+// Инициализация при загрузке
+window.addEventListener('DOMContentLoaded', () => {
+    setMinDate();
+    
+    // Настройка времени работы (9:00-20:00)
+    document.getElementById('startTime').addEventListener('change', function() {
+        validateTime();
+        calculatePrice();
+    });
+    
+    document.getElementById('endTime').addEventListener('change', function() {
+        validateTime();
+        calculatePrice();
+    });
+    
+    document.querySelector('input[name="Кількість квадроциклів"]').addEventListener('change', calculatePrice);
+    
+    // Установка начального времени (следующий полный час от текущего времени)
+    const now = new Date();
+    let nextHour = now.getHours() + 1;
+    if (nextHour < 9) nextHour = 9;
+    if (nextHour >= 20) nextHour = 9; // если уже вечер, переносим на утро
+    
+    const startTime = `${nextHour.toString().padStart(2, '0')}:00`;
+    document.getElementById('startTime').value = startTime;
+    
+    // Установка времени окончания (+1 час от начала)
+    const endHour = (nextHour + 1) % 24;
+    const endTime = `${endHour.toString().padStart(2, '0')}:00`;
+    document.getElementById('endTime').value = endTime;
+    
+    // Первоначальный расчет цены
+    calculatePrice();
 });
 </script>
 
