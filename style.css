@@ -45,32 +45,58 @@ html {
 /* Для мобильных устройств */
 @media (max-width: 768px) {
     .header-container {
-        flex-direction: row;
-        align-items: flex-start;
+        flex-direction: row; /* Горизонтальное расположение */
+        align-items: center; /* Выравнивание по центру */
+        padding: 10px 15px; /* Удобные отступы */
+        flex-wrap: nowrap; /* Запрет переноса на новую строку */
+        overflow-x: auto; /* Горизонтальная прокрутка если не помещается */
+        -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+        background-color: #1a1a1a; /* Цвет фона */
     }
 
     .logo {
-        margin-bottom: 15px;
+        margin-bottom: 0;
+        margin-right: 15px; /* Отступ от меню */
+        flex-shrink: 0; /* Запрет уменьшения лого */
     }
 
     .logo img {
         height: 40px;
     }
 
+    nav {
+        flex-shrink: 0; /* Запрет уменьшения навигации */
+    }
+
     nav ul {
         display: flex;
-        flex-direction: column;
-        width: 100%;
+        flex-direction: row; /* Горизонтальное меню */
+        width: auto; /* Автоматическая ширина */
+        gap: 10px; /* Равномерные отступы */
+        padding-bottom: 5px; /* Место для скролла */
     }
 
     nav ul li {
-        margin: 5px 0;
-        margin-left: 0;
+        margin: 0; /* Убираем отступы */
     }
 
     nav ul li a {
-        padding: 8px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding: 8px 12px; /* Удобные для касания */
+        border-bottom: none; /* Убираем нижнюю границу */
+        background: rgba(255, 255, 255, 0.1); /* Легкий фон */
+        border-radius: 20px; /* Скругленные углы */
+        white-space: nowrap; /* Текст в одну строку */
+        transition: all 0.3s ease; /* Плавные анимации */
+    }
+
+    nav ul li a:hover {
+        background: rgba(255, 107, 0, 0.3); /* Эффект при наведении */
+        transform: translateY(-2px); /* Легкий подъем */
+    }
+
+    /* Скрываем scrollbar */
+    .header-container::-webkit-scrollbar {
+        display: none;
     }
 }
         nav ul {
