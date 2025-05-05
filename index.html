@@ -389,34 +389,25 @@
     const prevBtn = document.querySelector('.prev-btn');
     const nextBtn = document.querySelector('.next-btn');
     const items = document.querySelectorAll('.carousel-item');
-    let currentIndex = 0;
+    const itemWidth = items[0].offsetWidth + 20; // Ширина элемента + gap
     
-    function updateCarousel() {
-        const itemWidth = items[0].offsetWidth + 20;
-        carousel.style.transform = `translateX(-${currentIndex * itemWidth}px)`;
-    }
-    
-    function getVisibleItemsCount() {
-        if (window.innerWidth < 576) return 1;
-        if (window.innerWidth < 992) return 2;
-        return 3;
-    }
-    
+    // Прокрутка при клике на кнопки
     nextBtn.addEventListener('click', () => {
-        if (currentIndex < items.length - getVisibleItemsCount()) {
-            currentIndex++;
-            updateCarousel();
-        }
+        carousel.scrollBy({ left: itemWidth, behavior: 'smooth' });
     });
     
     prevBtn.addEventListener('click', () => {
-        if (currentIndex > 0) {
-            currentIndex--;
-            updateCarousel();
-        }
+        carousel.scrollBy({ left: -itemWidth, behavior: 'smooth' });
     });
     
-    window.addEventListener('resize', updateCarousel);
+    // Автоматическое скрытие кнопок в начале/конце
+    const updateButtons = () => {
+        prevBtn.style.display = carousel.scrollLeft <= 10 ? 'none' : 'flex';
+        nextBtn.style.display = carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth - 10 ? 'none' : 'flex';
+    };
+    
+    carousel.addEventListener('scroll', updateButtons);
+    updateButtons();
 });
     </script>
 <script>
