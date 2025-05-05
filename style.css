@@ -48,7 +48,7 @@ html {
         flex-direction: row; /* Горизонтальное расположение */
         align-items: center; /* Выравнивание по центру */
         padding: 10px 15px; /* Удобные отступы */
-        flex-wrap: nowrap; /* Запрет переноса на новую строку */
+        /*flex-wrap: nowrap;*/ /* Запрет переноса на новую строку */
         overflow-x: auto; /* Горизонтальная прокрутка если не помещается */
         -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
         background-color: #1a1a1a; /* Цвет фона */
