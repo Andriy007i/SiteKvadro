@@ -384,31 +384,40 @@
         });
 
         // Карусель галереи
-        const carousel = document.querySelector('.carousel');
-        const prevBtn = document.querySelector('.prev-btn');
-        const nextBtn = document.querySelector('.next-btn');
-        let currentIndex = 0;
-
-        nextBtn.addEventListener('click', () => {
-            currentIndex = (currentIndex + 1) % 6;
+        document.addEventListener('DOMContentLoaded', function() {
+    const carousel = document.querySelector('.carousel');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    const items = document.querySelectorAll('.carousel-item');
+    let currentIndex = 0;
+    
+    function updateCarousel() {
+        const itemWidth = items[0].offsetWidth + 20;
+        carousel.style.transform = `translateX(-${currentIndex * itemWidth}px)`;
+    }
+    
+    function getVisibleItemsCount() {
+        if (window.innerWidth < 576) return 1;
+        if (window.innerWidth < 992) return 2;
+        return 3;
+    }
+    
+    nextBtn.addEventListener('click', () => {
+        if (currentIndex < items.length - getVisibleItemsCount()) {
+            currentIndex++;
             updateCarousel();
-        });
-
-        prevBtn.addEventListener('click', () => {
-            currentIndex = (currentIndex - 1 + 6) % 6;
-            updateCarousel();
-        });
-
-        function updateCarousel() {
-            const itemWidth = document.querySelector('.carousel-item').offsetWidth + 20;
-            carousel.style.transform = `translateX(-${currentIndex * itemWidth}px)`;
         }
-
-        // Автопрокрутка карусели (опционально)
-        setInterval(() => {
-            currentIndex = (currentIndex + 1) % 6;
+    });
+    
+    prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
             updateCarousel();
-        }, 5000);
+        }
+    });
+    
+    window.addEventListener('resize', updateCarousel);
+});
     </script>
 <script>
 // Установка минимальной даты (завтра)
