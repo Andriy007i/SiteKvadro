@@ -674,3 +674,7 @@ html {
     font-size: 14px;
   }
 }
+@media (max-width: 480px) {
+  .header-btn { padding: 8px 12px; font-size: 14px; }
+  .form { width: 90%; }
+}
